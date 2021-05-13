@@ -84,3 +84,20 @@ export function getOrthonormalTransform(
   const vOrientation = getOrientation(v1, v2)
   return vOrientation.multiply(uOrientation.getTransposed())
 }
+
+export function calculateDistanceToPointOnSquare(angle: number): number {
+  const div = (angle * 4) / Math.PI
+  const useCosinus = Math.abs(Math.floor(div)) % 2 === 0
+  return (
+    1 /
+    Math.cos(
+      useCosinus
+        ? ((div - Math.floor(div)) * Math.PI) / 4
+        : Math.PI / 4 - ((div - Math.floor(div)) * Math.PI) / 4,
+    )
+  )
+}
+
+export function getCoords(length: number, angle: number) {
+  return [Math.sin(angle) * length, Math.cos(angle) * length]
+}

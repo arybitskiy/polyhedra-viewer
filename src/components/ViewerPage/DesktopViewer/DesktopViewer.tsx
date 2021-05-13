@@ -1,10 +1,11 @@
-import React, { memo } from "react"
+import React, { memo, useContext } from "react"
 
 import { useStyle } from "styles"
 import { flexRow } from "styles/common"
 import Sidebar from "./Sidebar"
 import Overlay from "./Overlay"
 import { SolidScene } from "../common"
+import { DimensionsContext } from "../context"
 
 interface Props {
   panel: string
@@ -14,12 +15,17 @@ interface Props {
 const sidebarW = "24rem"
 
 function Scene({ solid, full }: Pick<Props, "solid"> & { full: boolean }) {
+  const { dimension } = useContext(DimensionsContext)
   const css = useStyle(
     {
       position: "relative",
-      width: full ? "100%" : `calc(100% - ${sidebarW})`,
-      height: "100%",
+      // width: full ? "100%" : `calc(100% - ${sidebarW})`,
+      // height: "100%",
       alignSelf: "flex-start",
+      width: dimension ? dimension[0] / 2 : "auto",
+      height: dimension ? dimension[1] / 2 : "auto",
+      margin: "50px",
+      // backgroundColor: "black",
     },
     [full],
   )

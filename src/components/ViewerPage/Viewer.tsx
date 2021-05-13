@@ -5,11 +5,26 @@ import { useParams, useNavigate } from "react-router-dom"
 import { escape } from "utils"
 import { Polyhedron } from "math/polyhedra"
 import { wrapProviders } from "components/common"
-import { OperationCtx, TransitionCtx, PolyhedronCtx } from "./context"
+import {
+  OperationCtx,
+  TransitionCtx,
+  PolyhedronCtx,
+  DimensionsContextProvider,
+} from "./context"
 import DesktopViewer from "./DesktopViewer"
 import MobileViewer from "./MobileViewer"
 import { usePageTitle } from "components/common"
 import useMediaInfo from "components/useMediaInfo"
+
+const dimensions = [
+  [960, 960],
+  [960, 960],
+  [480, 480],
+  [240, 240],
+  [160, 160],
+  [120, 120],
+  [96, 96],
+]
 
 interface InnerProps {
   solid: string
@@ -66,7 +81,9 @@ export default function Viewer({ solid }: { solid: string }) {
   return (
     <PolyhedronCtx.Provider name={solid}>
       <Providers>
-        <InnerViewer solid={solid} panel={panel} />
+        <DimensionsContextProvider dimensions={dimensions}>
+          <InnerViewer solid={solid} panel={panel} />
+        </DimensionsContextProvider>
       </Providers>
     </PolyhedronCtx.Provider>
   )

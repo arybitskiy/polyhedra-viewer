@@ -1,0 +1,33 @@
+#!/usr/local/opt/php@7.4/bin/php
+<?php
+
+$input = $argv[1];
+$output = $argv[2];
+
+if (empty($input) || empty($output)) {
+    echo "{$argv[0]} input output \n";
+    echo "Example: {$argv[0]} /Volumes/SHARED/dices/icosidodecahedron/480x480_trimmed/icosidodecahedron_480x480_059.png /Volumes/SHARED/dices/icosidodecahedron/480x480_trimmed/icosidodecahedron_480x480_059.jpg\n";
+}
+
+$image = new Imagick($input);
+
+$pixelIterator = $image->getPixelIterator();
+
+// Should be also saved later
+$alphaPixels = [];
+
+foreach ($pixelIterator as $row => $pixels) {
+    foreach ($pixels as $column => $pixel) {
+        $color = $pixel->getColor(2);
+        if ($color['a'] === 0) {
+            $pixel->setColor('rgb(0,255,0)');
+        } else if ($color['a'] !== 255) {
+            $pixel->setColor("rgb({$color['r']},{$color['g']},{$color['b']})");
+            $alphaPixels[$row][$column] = $color['a'];
+        }
+    }
+    $pixelIterator->syncIterator();
+}
+
+$image->writeImage($output);
+echo "$input -> $output\n";

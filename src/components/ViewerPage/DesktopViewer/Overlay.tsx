@@ -19,7 +19,7 @@ export default function Overlay({ solid }: Props) {
 
   const title = useStyle({
     ...absolute("bottom", "left"),
-    pointerEvents: "initial",
+    pointerEvents: "none",
     padding: scales.spacing[4],
   })
 

@@ -1,0 +1,80 @@
+#!/bin/bash
+
+ME=`basename "$0"`
+INPUT_PATTERN=$1
+OUTPUT_PATTERN=$2
+REZOLUTION=$3
+
+if [[ -z "${INPUT_PATTERN}" || -z "${OUTPUT_PATTERN}" || -z "${REZOLUTION}" ]]; then
+    echo "${ME} INPUT_PATTERN OUTPUT_PATTERN XxY"
+    echo "Example: ${ME} /Volumes/SHARED/dices/icosidodecahedron/480x480/icosidodecahedron_480x480_\*.png /Volumes/SHARED/dices/icosidodecahedron/480x480/icosidodecahedron_480x480_%03d.png 480x480"
+    exit 1
+fi
+
+# 1. Convert to apng
+CMD="convert"
+for i in ${INPUT_PATTERN}; do [ -f "$i" ] && CMD="${CMD} -dispose Previous ${i}"; done
+TMP_APNG=$(mktemp)
+rm ${TMP_APNG}
+TMP_APNG="${TMP_APNG}.apng"
+CMD="${CMD} ${TMP_APNG}"
+#echo $CMD
+eval $CMD
+
+# 2. Get bgcolor
+BGCOLOR=$(convert ${TMP_APNG}\[0\] -format "%[pixel:u.p{0,0}]" info:)
+
+# 3. Convert to miff
+
+#convert ${INPUT_PATTERN} -trim ${OUTPUT_PATTERN}
+#rm $TMP_APNG
+#exit
+
+TMP_MIFF=$(mktemp)
+rm ${TMP_MIFF}
+RM_TMP_MIFF="${TMP_MIFF}-*.miff"
+TMP_MIFF="${TMP_MIFF}-%04d.miff"
+convert ${INPUT_PATTERN} -trim -layers TrimBounds ${TMP_MIFF}
+#convert apng:${TMP_APNG} -trim -layers TrimBounds ${TMP_MIFF}
+rm $TMP_APNG
+
+# 4. Flatten
+mogrify -background "${BGCOLOR}" -layers flatten "${RM_TMP_MIFF}"
+
+# 5. Gather apng
+#CMD="convert"
+#for i in ${RM_TMP_MIFF}; do [ -f "$i" ] && CMD="${CMD} -dispose Previous ${i}"; done
+#CMD="${CMD} ${TMP_APNG}"
+#echo $CMD
+#eval $CMD
+#rm $RM_TMP_MIFF
+
+# 6. Convert to png and remove miff
+for i in ${RM_TMP_MIFF}; do [ -f "${i}" ] && convert "${i}" "${i}.png"  && rm "${i}"; done
+
+# 6.1. Resize png to needed size
+mogrify -resize "${REZOLUTION}" "${RM_TMP_MIFF}.png"
+
+# 7. Replace colors and save as jpg
+index=0
+for i in ${RM_TMP_MIFF}.png; do [ -f "${i}" ] && ./process-colors "${i}" "$(printf "${OUTPUT_PATTERN}" "${index}")" && rm "${i}" && index=$((index+1)); done
+
+
+
+
+# 1. Convert to apng
+# convert -dispose Background icosidodecahedron_480x480_00.png -dispose Background icosidodecahedron_480x480_01.png -dispose Background icosidodecahedron_480x480_02.png -dispose Background icosidodecahedron_480x480_03.png -dispose Background icosidodecahedron_480x480_04.png -dispose Background icosidodecahedron_480x480_05.png  -dispose Background icosidodecahedron_480x480_06.png  -dispose Background icosidodecahedron_480x480_07.png  -dispose Background icosidodecahedron_480x480_08.png -dispose Background icosidodecahedron_480x480_09.png icosidodecahedron_480x480.apng
+
+# 2. Get bgcolor
+# bgcolor=`convert icosidodecahedron_480x480.apng\[0\] -format "%[pixel:u.p{0,0}]" info:`
+
+# 3. Convert to miff
+# convert apng:icosidodecahedron_480x480.apng -trim -layers TrimBounds out-%03d.miff
+
+# 4. Flatten
+# mogrify -background "$bgcolor" -layers flatten out-*.miff
+
+
+# 5. Gather apng
+# convert -dispose Background out-000.miff -dispose Background out-001.miff -dispose Background out-002.miff -dispose Background out-003.miff -dispose Background out-004.miff -dispose Background out-005.miff  -dispose Background out-006.miff  -dispose Background out-007.miff  -dispose Background out-008.miff -dispose Background out-009.miff icosidodecahedron_480x480_trimmed.apng
+
