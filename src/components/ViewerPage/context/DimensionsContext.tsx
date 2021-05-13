@@ -44,6 +44,7 @@ export const DimensionsContextProvider: FunctionComponent<DimensionsContextProvi
     goNext()
     // setShouldRender(true)
     // setActiveDimensionId(0)
+    // eslint-disable-next-line
   }, [])
 
   const dimension = shouldRender ? dimensions[activeDimensionId] : undefined
