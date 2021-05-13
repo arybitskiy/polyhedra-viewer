@@ -44,7 +44,7 @@ export const DimensionsContextProvider: FunctionComponent<DimensionsContextProvi
     goNext()
     // setShouldRender(true)
     // setActiveDimensionId(0)
-  }, [goNext])
+  }, [])
 
   const dimension = shouldRender ? dimensions[activeDimensionId] : undefined
 
