@@ -10,16 +10,16 @@ import { isEqual, forEach } from "lodash-es"
 import { Point } from "types"
 import { SolidData } from "math/polyhedra"
 
-import face001 from "images/faces/face_001.jpg"
-import face002 from "images/faces/face_002.jpg"
-import face003 from "images/faces/face_003.jpg"
-import face004 from "images/faces/face_004.jpg"
+// import face001 from "images/faces/face_001.jpg"
+// import face002 from "images/faces/face_002.jpg"
+// import face003 from "images/faces/face_003.jpg"
+// import face004 from "images/faces/face_004.jpg"
 
 import useCentroid from "./useCentroid"
 import useTextureCoordinate from "./useTextureCoordinate"
 
-// const faces: string[] = []
-const faces = [face001, face002, face003, face004]
+const faces: string[] = []
+// const faces = [face001, face002, face003, face004]
 
 // Join a list of lists with an inner and outer separator.
 function joinListOfLists<T>(list: T[][], outerSep: string, innerSep: string) {
@@ -78,24 +78,24 @@ const Canvas = ({
     if (ref.current && imageRef.current) {
       const ctx = ref.current.getContext("2d", { alpha: false })
 
-      ctx.drawImage(imageRef.current, 0, 0, width, height)
+      // ctx.drawImage(imageRef.current, 0, 0, width, height)
 
-      // ctx.globalAlpha = 0;
-      // ctx.fillStyle = colorArrayToRgb(color)
-      // ctx.fillRect(0, 0, width, height)
+      ctx.globalAlpha = 0
+      ctx.fillStyle = colorArrayToRgb(color)
+      ctx.fillRect(0, 0, width, height)
 
-      // ctx.globalAlpha = 1
-      // ctx.fillStyle = "white"
-      // ctx.font = "400px serif"
-      // ctx.textBaseline = "middle"
-      // ctx.textAlign = "center"
-      // ctx.fillText(
-      //   ["6", "9"].includes(text) ? `${text}.` : text,
-      //   width / 2,
-      //   height / 2,
-      // )
+      ctx.globalAlpha = 1
+      ctx.fillStyle = "white"
+      ctx.font = "400px serif"
+      ctx.textBaseline = "middle"
+      ctx.textAlign = "center"
+      ctx.fillText(
+        ["6", "9"].includes(text) ? `${text}.` : text,
+        width / 2,
+        height / 2,
+      )
     }
-  }, [ref, imageRef, text])
+  }, [ref, imageRef, text, color])
 
   return (
     <>
